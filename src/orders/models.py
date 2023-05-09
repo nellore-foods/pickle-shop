@@ -1,5 +1,6 @@
 from django.db import models
-from account.models import Customer, Outlet
+from accounts.models import Customer, Outlet
+from inventory.models import Product
 
 
 class Order(models.Model):
@@ -7,13 +8,7 @@ class Order(models.Model):
     Order Details for an order placed by a customer in a customer
     outlet.
     """
-    id = models.AutoField(primary_key=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    outlet = models.ForeignKey(Outlet, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
-    amount = models.DecimalField(decimal_places=2)
-    status = models.CharField(choices=[
-
+    STATUS_CHOICES = [
         # These are the ones I could think off of my head.  Again, this
         # might just be for testing.  In reality, a product will be
         # going though a bunch of other stages while transitioning from
@@ -29,14 +24,30 @@ class Order(models.Model):
 
         ("P", "Pending"),
         ("D", "Delivered"),
+    ]
 
-    ], default="P")
+    id = models.AutoField(primary_key=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    outlet = models.ForeignKey(Outlet, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    amount = models.DecimalField(max_digits=9, decimal_places=2)
+    status = models.CharField(
+        max_length=15,
+        choices=STATUS_CHOICES,
+        default="P",
+    )
     active = models.BooleanField(default=True)
 
     def __repr__(self):
         return (
-            f"Order[ ID: {self.id}, Customer: {self.uid}, Date: {self.date}, "
-            f"Status: {self.status}, Active: {self.active} ]"
+            f"Order[ ",
+                f"ID: {self.id}, ",
+                f"Customer: {self.customer}, ",
+                f"Date: {self.date}, "
+                f"Amount: {self.amount}, "
+                f"Status: {self.status}, ",
+                f"Active: {self.active}, ",
+            f"]"
         )
 
     def __str__(self):
@@ -57,8 +68,12 @@ class OrderItem(models.Model):
 
     def __repr__(self):
         return (
-            f"OrderItems[ ID: {self.id}, Order: {self.order},",
-            f"Product: {self.product}, Quantity: {self.quantity} ]"
+            f"OrderItems[ ",
+                f"ID: {self.id}, ",
+                f"Order: {self.order},",
+                f"Product: {self.product}, ",
+                f"Quantity: {self.quantity}, ",
+            f"]"
         )
 
     def __str__(self):
