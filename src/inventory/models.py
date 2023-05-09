@@ -7,7 +7,7 @@ class Product(models.Model):
     """
     id          = models.AutoField(primary_key=True)
     name        = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(blank=True)
     rate        = models.DecimalField(max_digits=7, decimal_places=2)
 
     def __repr__(self):
