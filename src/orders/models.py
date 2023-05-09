@@ -1,7 +1,8 @@
 from django.db import models
+from account.models import Customer, Outlet
 
 
-class Orders(models.Model):
+class Order(models.Model):
     """
     Order Details for an order placed by a customer in a customer
     outlet.
@@ -45,13 +46,13 @@ class Orders(models.Model):
         )
 
 
-class OrderItems(models.Model):
+class OrderItem(models.Model):
     """
     Distinct items associated with each order.
     """
     id = models.AutoField(primary_key=True)
-    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
-    product = models.ForeignKey(..., on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
     def __repr__(self):
